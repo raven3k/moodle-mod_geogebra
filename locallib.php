@@ -1145,7 +1145,8 @@ function geogebra_get_nograding_grade($geogebraid, $userid) {
             parse_str($attempt->vars, $parsedvars);
             $durationsum += $parsedvars['duration'];
         }
-
+		
+		$result = new stdClass();
         $result->userid = $userid;
         $result->grade = 0;
         $result->rawgrade = 0;
@@ -1172,7 +1173,6 @@ function geogebra_get_average_grade($geogebraid, $userid) {
     global $DB;
 
     if ($attempts = $DB->get_records('geogebra_attempts', array('userid' => $userid, 'geogebra' => $geogebraid, 'finished' => 1))) {
-        $result = new stdClass();
         $durationsum = 0;
         $gradessum = 0;
         $count = 0;
@@ -1184,6 +1184,7 @@ function geogebra_get_average_grade($geogebraid, $userid) {
                 $durationsum += $parsedvars['duration'];
             }
         }
+        $result = new stdClass();
         if ($count > 0) {
             $result->userid = $userid;
             $result->grade = round($gradessum / $count, 2);
@@ -1231,6 +1232,7 @@ function geogebra_get_last_attempt_grade($geogebraid, $userid) {
             return false;
         }
         parse_str($attempt->vars, $parsedvars);
+		$result = new stdClass();
         if ($parsedvars['grade'] < 0) { // Last attempt not graded
             $result->userid = $userid;
             $result->grade = '';
@@ -1279,6 +1281,7 @@ function geogebra_get_first_attempt_grade($geogebraid, $userid) {
             return false;
         }
         parse_str($attempt->vars, $parsedvars);
+		$result = new stdClass();
         if ($parsedvars['grade'] < 0) { // First attempt not graded
             $result->userid = $userid;
             $result->grade = '';
@@ -1291,7 +1294,6 @@ function geogebra_get_first_attempt_grade($geogebraid, $userid) {
 
             return $result;
         } else {
-
             $result->userid = $userid;
             $result->grade = $parsedvars['grade'];
             $result->gradecomment = $attempt->gradecomment;
@@ -1345,7 +1347,7 @@ function geogebra_get_highest_attempt_grade($geogebraid, $userid) {
             }
         }
         // 3. Prepare return values
-        $result = new stdClass();
+		$result = new stdClass();		
         if (isset($maxattempt)) {
             parse_str($maxattempt->vars, $parsedvars);
             $result->userid = $userid;
@@ -1412,6 +1414,7 @@ function geogebra_get_lowest_attempt_grade($geogebraid, $userid) {
         }
 
         // 3. Prepare return values
+		$result = new stdClass();
         if (isset($minattempt)) {
             parse_str($minattempt->vars, $parsedvars);
 
